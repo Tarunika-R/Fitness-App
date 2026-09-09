@@ -14,32 +14,32 @@ export default function TrendChart({ data }) {
             <AreaChart data={data} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
                 <defs>
                     <linearGradient id="goldFill" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#F2B705" stopOpacity={0.35} />
-                        <stop offset="100%" stopColor="#F2B705" stopOpacity={0} />
+                        <stop offset="0%" stopColor="#00F5D4" stopOpacity={0.35} />
+                        <stop offset="100%" stopColor="#00F5D4" stopOpacity={0} />
                     </linearGradient>
                 </defs>
-                <CartesianGrid stroke="#2A5680" strokeDasharray="3 3" vertical={false} />
+                <CartesianGrid stroke="#282149" strokeDasharray="3 3" vertical={false} />
                 <XAxis
                     dataKey="date"
-                    stroke="#8CA3B8"
+                    stroke="#9C93C7"
                     fontSize={12}
                     tickLine={false}
                     axisLine={false}
                 />
-                <YAxis stroke="#8CA3B8" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="#9C93C7" fontSize={12} tickLine={false} axisLine={false} />
                 <Tooltip
                     contentStyle={{
-                        background: '#1E4364',
-                        border: '1px solid #2A5680',
+                        background: '#181530',
+                        border: '1px solid #282149',
                         borderRadius: '8px',
-                        color: '#F4F6F8',
+                        color: '#F2EFFB',
                     }}
-                    labelStyle={{ color: '#8CA3B8' }}
+                    labelStyle={{ color: '#9C93C7' }}
                 />
                 <Area
                     type="monotone"
                     dataKey="points"
-                    stroke="#F2B705"
+                    stroke="#00F5D4"
                     strokeWidth={2}
                     fill="url(#goldFill)"
                 />

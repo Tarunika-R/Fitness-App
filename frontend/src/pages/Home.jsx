@@ -1,38 +1,55 @@
 import { Link } from 'react-router-dom'
+import SportVisual from '../components/visuals/SportVisual.jsx'
+import FeatureVisual from '../components/visuals/FeatureVisual.jsx'
+
+const FEATURES = [
+    {
+        icon: 'track',
+        title: 'Track Any Sport',
+        desc: 'Log running, walking, cycling, gym, swimming, or daily steps.',
+    },
+    {
+        icon: 'points',
+        title: 'Earn Points',
+        desc: 'Every activity is converted to points using a fair, transparent system.',
+    },
+    {
+        icon: 'compete',
+        title: 'Compete',
+        desc: 'Compare yourself against others on a real-time global leaderboard.',
+    },
+    {
+        icon: 'visualize',
+        title: 'Visualize',
+        desc: 'See your progress with activity trends and sport breakdowns.',
+    },
+]
+
+const SPORTS = [
+    { name: 'Running', type: 'running', color: 'text-gold' },
+    { name: 'Walking', type: 'walking', color: 'text-chalk-muted' },
+    { name: 'Cycling', type: 'cycling', color: 'text-blue-400' },
+    { name: 'Gym', type: 'gym', color: 'text-cinder' },
+    { name: 'Swimming', type: 'swimming', color: 'text-emerald-400' },
+    { name: 'Steps', type: 'daily_steps', color: 'text-purple-400' },
+]
+
+const SCORING = [
+    { sport: 'Running', type: 'running', rate: '1 km = 100 pts' },
+    { sport: 'Walking', type: 'walking', rate: '1 km = 50 pts' },
+    { sport: 'Cycling', type: 'cycling', rate: '1 km = 25 pts' },
+    { sport: 'Gym', type: 'gym', rate: '1 min = 5 pts' },
+    { sport: 'Swimming', type: 'swimming', rate: '1 min = 15 pts' },
+    { sport: 'Steps', type: 'daily_steps', rate: '100 steps = 1 pt' },
+]
+
+const EXPLORE = [
+    { to: '/leaderboard', title: 'Leaderboard', desc: 'See the live global rankings.' },
+    { to: '/dashboard', title: 'Dashboard', desc: 'Preview what your stats page looks like.' },
+    { to: '/log', title: 'Log Activity', desc: 'Peek at the activity logging form.' },
+]
 
 export default function Home({ currentUser }) {
-    const features = [
-        {
-            icon: '🏃',
-            title: 'Track Any Sport',
-            desc: 'Log running, walking, cycling, gym, swimming, or daily steps.',
-        },
-        {
-            icon: '⭐',
-            title: 'Earn Points',
-            desc: 'Every activity is converted to points using a fair, transparent system.',
-        },
-        {
-            icon: '🏆',
-            title: 'Compete',
-            desc: 'Compare yourself against others on a real-time global leaderboard.',
-        },
-        {
-            icon: '📊',
-            title: 'Visualize',
-            desc: 'See your progress with activity trends and sport breakdowns.',
-        },
-    ]
-
-    const sports = [
-        { name: 'Running', emoji: '🏃', color: 'text-gold' },
-        { name: 'Walking', emoji: '🚶', color: 'text-chalk-muted' },
-        { name: 'Cycling', emoji: '🚴', color: 'text-blue-400' },
-        { name: 'Gym', emoji: '💪', color: 'text-cinder' },
-        { name: 'Swimming', emoji: '🏊', color: 'text-emerald-400' },
-        { name: 'Steps', emoji: '👟', color: 'text-purple-400' },
-    ]
-
     if (currentUser) {
         return (
             <div className="text-center py-16">
@@ -73,7 +90,8 @@ export default function Home({ currentUser }) {
                 </h1>
                 <p className="text-chalk-muted text-lg sm:text-xl max-w-2xl mx-auto mb-10 animate-slide-up animate-delay-200 leading-relaxed">
                     Turn your fitness routine into a competition. Log any activity, watch your
-                    points climb, and race for the top of the global leaderboard.
+                    points climb, and race for the top of the global leaderboard on{' '}
+                    <span className="text-gold font-semibold">Fit Quest</span>.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center animate-slide-up animate-delay-300">
                     <Link
@@ -91,19 +109,43 @@ export default function Home({ currentUser }) {
                 </div>
             </section>
 
+            {/* Explore before you join */}
+            <section className="py-10">
+                <p className="text-center text-chalk-muted text-sm mb-6">
+                    Not ready to commit? Take a look around first.
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    {EXPLORE.map((item, i) => (
+                        <Link
+                            key={item.to}
+                            to={item.to}
+                            className="group bg-track-surface hover:bg-track-surfaceLight border border-track-surfaceLight hover:border-gold rounded-xl p-5 card-hover animate-slide-up"
+                            style={{ animationDelay: `${i * 80}ms` }}
+                        >
+                            <p className="font-display text-lg font-bold mb-1 group-hover:text-gold transition-colors">
+                                {item.title} →
+                            </p>
+                            <p className="text-chalk-muted text-sm">{item.desc}</p>
+                        </Link>
+                    ))}
+                </div>
+            </section>
+
             {/* Sports Showcase */}
             <section className="py-16 mt-12">
                 <h2 className="font-display text-4xl font-bold text-center mb-12 animate-slide-up">
                     Track 6 Different Sports
                 </h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-                    {sports.map((sport, i) => (
+                    {SPORTS.map((sport, i) => (
                         <div
                             key={sport.name}
                             className="bg-track-surface hover:bg-track-surfaceLight border border-track-surfaceLight rounded-xl p-6 text-center card-hover animate-scale-in"
                             style={{ animationDelay: `${i * 50}ms` }}
                         >
-                            <div className={`text-5xl mb-3 ${sport.color}`}>{sport.emoji}</div>
+                            <div className={`flex justify-center mb-3 ${sport.color}`}>
+                                <SportVisual type={sport.type} className="h-12 w-12" />
+                            </div>
                             <p className="font-medium">{sport.name}</p>
                         </div>
                     ))}
@@ -116,13 +158,15 @@ export default function Home({ currentUser }) {
                     Why Compete?
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {features.map((feature, i) => (
+                    {FEATURES.map((feature, i) => (
                         <div
                             key={feature.title}
                             className="bg-gradient-to-br from-track-surface to-track rounded-xl p-6 border border-track-surfaceLight card-hover animate-slide-up"
                             style={{ animationDelay: `${i * 100}ms` }}
                         >
-                            <div className="text-4xl mb-4">{feature.icon}</div>
+                            <div className="text-gold mb-4">
+                                <FeatureVisual type={feature.icon} className="h-10 w-10" />
+                            </div>
                             <h3 className="font-display text-xl font-bold mb-2">{feature.title}</h3>
                             <p className="text-chalk-muted text-sm leading-relaxed">{feature.desc}</p>
                         </div>
@@ -167,21 +211,17 @@ export default function Home({ currentUser }) {
                     Fair Points System
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {[
-                        { sport: '🏃 Running', rate: '1 km = 100 pts' },
-                        { sport: '🚶 Walking', rate: '1 km = 50 pts' },
-                        { sport: '🚴 Cycling', rate: '1 km = 25 pts' },
-                        { sport: '💪 Gym', rate: '1 min = 5 pts' },
-                        { sport: '🏊 Swimming', rate: '1 min = 15 pts' },
-                        { sport: '👟 Steps', rate: '100 steps = 1 pt' },
-                    ].map((item, i) => (
+                    {SCORING.map((item, i) => (
                         <div
                             key={item.sport}
                             className="bg-track rounded-xl p-4 border border-track-surfaceLight text-center hover:border-gold transition-colors animate-fade-in"
                             style={{ animationDelay: `${i * 50}ms` }}
                         >
-                            <p className="text-2xl mb-2">{item.sport}</p>
-                            <p className="text-gold font-semibold">{item.rate}</p>
+                            <div className="flex justify-center text-gold mb-2">
+                                <SportVisual type={item.type} className="h-8 w-8" />
+                            </div>
+                            <p className="font-semibold mb-1">{item.sport}</p>
+                            <p className="text-gold font-semibold text-sm">{item.rate}</p>
                         </div>
                     ))}
                 </div>

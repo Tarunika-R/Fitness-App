@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import Navbar from './components/Navbar.jsx'
+import Footer from './components/Footer.jsx'
+import AnimatedBackground from './components/AnimatedBackground.jsx'
 import Home from './pages/Home.jsx'
 import Register from './pages/Register.jsx'
 import SignIn from './pages/SignIn.jsx'
@@ -63,11 +65,13 @@ export default function App() {
 
     return (
         <BrowserRouter>
+            <AnimatedBackground />
             <div className="min-h-screen flex flex-col">
                 <Navbar currentUser={currentUser} onSignOut={handleSignOut} />
                 <main className="flex-1 max-w-6xl w-full mx-auto px-6 py-10">
                     <AnimatedRoutes currentUser={currentUser} onSetCurrentUser={handleSetCurrentUser} />
                 </main>
+                <Footer />
             </div>
         </BrowserRouter>
     )

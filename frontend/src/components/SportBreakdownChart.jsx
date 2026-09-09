@@ -2,12 +2,12 @@ import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recha
 
 // One consistent color per sport across the app.
 const SPORT_COLORS = {
-    running: '#F2B705',
-    walking: '#8CA3B8',
-    cycling: '#4FA3D1',
-    gym: '#E4572E',
-    swimming: '#3FB68B',
-    daily_steps: '#B57EDC',
+    running: '#00F5D4',
+    walking: '#9C93C7',
+    cycling: '#4FA3FF',
+    gym: '#FF3D81',
+    swimming: '#3FE0B6',
+    daily_steps: '#B57EFF',
 }
 
 const SPORT_LABELS = {
@@ -46,22 +46,22 @@ export default function SportBreakdownChart({ data }) {
                     paddingAngle={2}
                 >
                     {chartData.map((entry) => (
-                        <Cell key={entry.sport} fill={SPORT_COLORS[entry.sport] || '#8CA3B8'} />
+                        <Cell key={entry.sport} fill={SPORT_COLORS[entry.sport] || '#9C93C7'} />
                     ))}
                 </Pie>
                 <Tooltip
                     contentStyle={{
-                        background: '#1E4364',
-                        border: '1px solid #2A5680',
+                        background: '#181530',
+                        border: '1px solid #282149',
                         borderRadius: '8px',
-                        color: '#F4F6F8',
+                        color: '#F2EFFB',
                     }}
                     formatter={(value) => [`${value} pts`, '']}
                 />
                 <Legend
                     verticalAlign="bottom"
                     height={36}
-                    wrapperStyle={{ fontSize: '12px', color: '#8CA3B8' }}
+                    wrapperStyle={{ fontSize: '12px', color: '#9C93C7' }}
                 />
             </PieChart>
         </ResponsiveContainer>

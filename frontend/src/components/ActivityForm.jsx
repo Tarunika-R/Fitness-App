@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import { logActivity, getErrorMessage } from '../api/client.js'
+import SportVisual from './visuals/SportVisual.jsx'
 
 const SPORTS = [
-    { value: 'running', label: 'Running', emoji: '🏃', metric: 'distance_km', unit: 'km' },
-    { value: 'walking', label: 'Walking', emoji: '🚶', metric: 'distance_km', unit: 'km' },
-    { value: 'cycling', label: 'Cycling', emoji: '🚴', metric: 'distance_km', unit: 'km' },
-    { value: 'gym', label: 'Gym', emoji: '💪', metric: 'duration_sec', unit: 'time' },
-    { value: 'swimming', label: 'Swimming', emoji: '🏊', metric: 'duration_sec', unit: 'time' },
-    { value: 'daily_steps', label: 'Daily Steps', emoji: '👟', metric: 'steps', unit: 'steps' },
+    { value: 'running', label: 'Running', metric: 'distance_km', unit: 'km' },
+    { value: 'walking', label: 'Walking', metric: 'distance_km', unit: 'km' },
+    { value: 'cycling', label: 'Cycling', metric: 'distance_km', unit: 'km' },
+    { value: 'gym', label: 'Gym', metric: 'duration_sec', unit: 'time' },
+    { value: 'swimming', label: 'Swimming', metric: 'duration_sec', unit: 'time' },
+    { value: 'daily_steps', label: 'Daily Steps', metric: 'steps', unit: 'steps' },
 ]
 
 export default function ActivityForm({ userId, onLogged }) {
@@ -83,11 +84,13 @@ export default function ActivityForm({ userId, onLogged }) {
                                 setSuccess(null)
                             }}
                             className={`px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200 border-2 transform hover:scale-105 active:scale-95 ${sportValue === s.value
-                                    ? 'bg-gold text-track border-gold shadow-lg'
-                                    : 'bg-track-surface text-chalk-muted border-track-surfaceLight hover:border-gold hover:text-chalk'
+                                ? 'bg-gold text-track border-gold shadow-lg'
+                                : 'bg-track-surface text-chalk-muted border-track-surfaceLight hover:border-gold hover:text-chalk'
                                 }`}
                         >
-                            <span className="text-lg block mb-1">{s.emoji}</span>
+                            <span className="flex justify-center mb-1">
+                                <SportVisual type={s.value} className="h-6 w-6" />
+                            </span>
                             {s.label}
                         </button>
                     ))}
@@ -143,7 +146,7 @@ export default function ActivityForm({ userId, onLogged }) {
                         </div>
                     </div>
                     <p className="text-xs text-chalk-muted mt-2">
-                        ⏱️ Only fully completed minutes earn points — 1:55 counts as 1 minute.
+                        Only fully completed minutes earn points — 1:55 counts as 1 minute.
                     </p>
                 </div>
             )}
@@ -164,7 +167,7 @@ export default function ActivityForm({ userId, onLogged }) {
                         className="w-full bg-track-surface border-2 border-track-surfaceLight rounded-lg px-4 py-3 text-chalk placeholder:text-chalk-muted focus:border-gold focus:ring-2 focus:ring-gold/30 outline-none transition-all text-lg"
                     />
                     <p className="text-xs text-chalk-muted mt-2">
-                        👟 Only full blocks of 100 steps count — 399 steps earns the same as 300.
+                        Only full blocks of 100 steps count — 399 steps earns the same as 300.
                     </p>
                 </div>
             )}
@@ -177,7 +180,7 @@ export default function ActivityForm({ userId, onLogged }) {
 
             {success && (
                 <div className="bg-gold/20 border-l-4 border-gold rounded-lg px-4 py-3 text-sm animate-slide-in-left">
-                    <span className="text-gold font-bold">🎯 +{success.points} points!</span>
+                    <span className="text-gold font-bold">+{success.points} points!</span>
                     <span className="text-chalk-muted"> Great job with {sport.label.toLowerCase()}.</span>
                 </div>
             )}
@@ -187,7 +190,7 @@ export default function ActivityForm({ userId, onLogged }) {
                 disabled={loading}
                 className="w-full bg-gold hover:bg-gold-dark disabled:opacity-60 disabled:cursor-not-allowed text-track font-bold py-4 rounded-lg transition-all hover:scale-105 hover:shadow-2xl active:scale-95 text-lg"
             >
-                {loading ? '⏳ Logging…' : '✓ Log Activity'}
+                {loading ? 'Logging…' : 'Log Activity'}
             </button>
         </form>
     )

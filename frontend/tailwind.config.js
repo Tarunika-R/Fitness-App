@@ -17,12 +17,14 @@ export default {
                     dark: '#C99500',
                     light: '#FFD54F',
                 },
-                cinder: {
-                    DEFAULT: '#E4572E',
-                },
+
                 chalk: {
                     DEFAULT: '#F4F6F8',
                     muted: '#8CA3B8',
+                },
+                bronze: {
+                    DEFAULT: '#CD7F32',
+                    dark: '#8C5523',
                 },
             },
             fontFamily: {

@@ -14,7 +14,7 @@ export default function Navbar({ currentUser, onSignOut }) {
             <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
                 <NavLink to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
                     <span className="font-display text-2xl font-bold text-chalk tracking-tight">
-                        FITNESS<span className="text-gold">CHALLENGE</span>
+                        FIT<span className="text-gold">QUEST</span>
                     </span>
                 </NavLink>
 
