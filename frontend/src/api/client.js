@@ -10,6 +10,11 @@ const client = axios.create({
 export const registerUser = (payload) =>
     client.post('/users', payload).then((res) => res.data)
 
+export const lookupUser = (firstName, lastName) =>
+    client
+        .get('/users/lookup', { params: { first_name: firstName, last_name: lastName } })
+        .then((res) => res.data)
+
 export const logActivity = (payload) =>
     client.post('/activities', payload).then((res) => res.data)
 

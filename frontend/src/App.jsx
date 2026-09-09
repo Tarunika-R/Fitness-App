@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Navbar from './components/Navbar.jsx'
 import Register from './pages/Register.jsx'
+import SignIn from './pages/SignIn.jsx'
 import LogActivity from './pages/LogActivity.jsx'
 import Leaderboard from './pages/Leaderboard.jsx'
 import Dashboard from './pages/Dashboard.jsx'
@@ -17,7 +18,7 @@ export default function App() {
         if (saved) setCurrentUser(JSON.parse(saved))
     }, [])
 
-    const handleRegistered = (user) => {
+    const handleSetCurrentUser = (user) => {
         setCurrentUser(user)
         localStorage.setItem(STORAGE_KEY, JSON.stringify(user))
     }
@@ -39,7 +40,11 @@ export default function App() {
                         />
                         <Route
                             path="/register"
-                            element={<Register onRegistered={handleRegistered} currentUser={currentUser} />}
+                            element={<Register onRegistered={handleSetCurrentUser} currentUser={currentUser} />}
+                        />
+                        <Route
+                            path="/login"
+                            element={<SignIn onSignedIn={handleSetCurrentUser} currentUser={currentUser} />}
                         />
                         <Route
                             path="/log"

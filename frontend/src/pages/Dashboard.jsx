@@ -39,17 +39,24 @@ export default function Dashboard({ currentUser }) {
     if (!currentUser) {
         return (
             <div className="max-w-md">
-                <h1 className="font-display text-3xl mb-3">Register first</h1>
+                <h1 className="font-display text-3xl mb-3">Sign in required</h1>
                 <p className="text-chalk-muted mb-6">
-                    Your personal dashboard appears once you're registered and have logged
-                    at least one activity.
+                    Sign in if you're already registered, or register if this is your first time.
                 </p>
-                <Link
-                    to="/register"
-                    className="inline-block bg-gold hover:bg-gold-dark text-track font-semibold px-6 py-3 rounded-lg transition-colors"
-                >
-                    Register now
-                </Link>
+                <div className="flex gap-3">
+                    <Link
+                        to="/login"
+                        className="inline-block bg-gold hover:bg-gold-dark text-track font-semibold px-6 py-3 rounded-lg transition-colors"
+                    >
+                        Sign In
+                    </Link>
+                    <Link
+                        to="/register"
+                        className="inline-block bg-track-surface hover:bg-track-surfaceLight border border-track-surfaceLight text-chalk font-semibold px-6 py-3 rounded-lg transition-colors"
+                    >
+                        Register
+                    </Link>
+                </div>
             </div>
         )
     }

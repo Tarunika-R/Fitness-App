@@ -27,9 +27,14 @@ export default function Navbar({ currentUser, onSignOut }) {
                         My Dashboard
                     </NavLink>
                     {!currentUser && (
-                        <NavLink to="/register" className={navLinkClass}>
-                            Register
-                        </NavLink>
+                        <>
+                            <NavLink to="/login" className={navLinkClass}>
+                                Sign In
+                            </NavLink>
+                            <NavLink to="/register" className={navLinkClass}>
+                                Register
+                            </NavLink>
+                        </>
                     )}
                 </nav>
 
