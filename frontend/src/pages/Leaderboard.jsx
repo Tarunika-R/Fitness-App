@@ -15,20 +15,33 @@ export default function Leaderboard({ currentUser }) {
     }, [])
 
     return (
-        <div>
-            <p className="text-gold font-semibold text-sm tracking-wide mb-2">GLOBAL RANKINGS</p>
-            <h1 className="font-display text-4xl font-semibold mb-8">Leaderboard</h1>
+        <div className="animate-slide-up">
+            <div className="mb-10 animate-slide-up">
+                <p className="text-gold font-semibold text-sm tracking-widest mb-3">GLOBAL RANKINGS</p>
+                <h1 className="font-display text-5xl font-bold">Leaderboard</h1>
+                <p className="text-chalk-muted mt-2">
+                    Ranked by total points earned. Trend shows your rank change over the past 7 days.
+                </p>
+            </div>
 
-            {loading && <p className="text-chalk-muted">Loading rankings…</p>}
+            {loading && (
+                <div className="text-center py-16 animate-pulse">
+                    <div className="inline-block">
+                        <div className="text-chalk-muted text-lg">Loading rankings…</div>
+                    </div>
+                </div>
+            )}
 
             {error && (
-                <div className="bg-cinder/10 border border-cinder/40 text-cinder rounded-lg px-4 py-3 text-sm max-w-md">
+                <div className="bg-cinder/15 border-l-4 border-cinder text-cinder rounded-lg px-6 py-4 max-w-md animate-slide-in-left">
                     {error}
                 </div>
             )}
 
             {!loading && !error && (
-                <LeaderboardTable entries={entries} currentUserId={currentUser?.userId} />
+                <div className="animate-scale-in">
+                    <LeaderboardTable entries={entries} currentUserId={currentUser?.userId} />
+                </div>
             )}
         </div>
     )

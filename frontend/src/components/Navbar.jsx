@@ -1,22 +1,27 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 
 const navLinkClass = ({ isActive }) =>
-    `px-4 py-2 text-sm font-medium tracking-wide transition-colors rounded-md ${isActive
-        ? 'bg-gold text-track'
-        : 'text-chalk-muted hover:text-chalk hover:bg-track-surfaceLight'
+    `px-4 py-2 text-sm font-medium tracking-wide transition-all duration-200 rounded-md ${isActive
+        ? 'bg-gold text-track font-semibold'
+        : 'text-chalk-muted hover:text-chalk hover:bg-track-surfaceLight active:scale-95'
     }`
 
 export default function Navbar({ currentUser, onSignOut }) {
+    const location = useLocation()
+
     return (
-        <header className="border-b border-track-surfaceLight bg-track/95 backdrop-blur sticky top-0 z-10">
-            <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-                <NavLink to="/" className="flex items-center gap-2">
-                    <span className="font-display text-2xl font-semibold text-chalk">
-                        FIT<span className="text-gold">QUEST</span>
+        <header className="border-b border-track-surfaceLight bg-gradient-to-r from-track to-track/95 backdrop-blur sticky top-0 z-10 shadow-lg transition-all duration-300">
+            <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+                <NavLink to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                    <span className="font-display text-2xl font-bold text-chalk tracking-tight">
+                        FITNESS<span className="text-gold">CHALLENGE</span>
                     </span>
                 </NavLink>
 
-                <nav className="flex items-center gap-1">
+                <nav className="hidden md:flex items-center gap-1">
+                    <NavLink to="/" className={navLinkClass}>
+                        Home
+                    </NavLink>
                     <NavLink to="/leaderboard" className={navLinkClass}>
                         Leaderboard
                     </NavLink>
@@ -24,7 +29,7 @@ export default function Navbar({ currentUser, onSignOut }) {
                         Log Activity
                     </NavLink>
                     <NavLink to="/dashboard" className={navLinkClass}>
-                        My Dashboard
+                        Dashboard
                     </NavLink>
                     {!currentUser && (
                         <>
@@ -39,19 +44,31 @@ export default function Navbar({ currentUser, onSignOut }) {
                 </nav>
 
                 {currentUser && (
-                    <div className="hidden sm:flex items-center gap-3 text-sm text-chalk-muted">
-                        <span>
-                            Signed in as{' '}
-                            <span className="text-chalk font-semibold">
+                    <div className="hidden sm:flex items-center gap-4">
+                        <div className="text-sm">
+                            <p className="text-chalk-muted">Logged in as</p>
+                            <p className="text-chalk font-semibold">
                                 {currentUser.first_name} {currentUser.last_name}
-                            </span>
-                        </span>
+                            </p>
+                        </div>
                         <button
                             onClick={onSignOut}
-                            className="text-chalk-muted hover:text-cinder transition-colors underline underline-offset-2"
+                            className="px-4 py-2 bg-cinder/20 hover:bg-cinder/40 text-cinder font-medium rounded-lg transition-all duration-200 hover:scale-105 active:scale-95"
                         >
-                            Sign out
+                            Sign Out
                         </button>
+                    </div>
+                )}
+
+                {!currentUser && (
+                    <div className="md:hidden flex gap-2">
+                        <NavLink to="/login" className="text-gold font-semibold hover:text-gold-light transition-colors">
+                            Sign In
+                        </NavLink>
+                        <span className="text-chalk-muted">/</span>
+                        <NavLink to="/register" className="text-gold font-semibold hover:text-gold-light transition-colors">
+                            Register
+                        </NavLink>
                     </div>
                 )}
             </div>

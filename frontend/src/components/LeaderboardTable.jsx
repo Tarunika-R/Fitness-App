@@ -1,73 +1,81 @@
 function TrendIndicator({ trend, rankChange }) {
     if (trend === 'up') {
         return (
-            <span className="inline-flex items-center gap-1 text-emerald-400 text-sm font-medium">
-                ▲ {rankChange}
+            <span className="inline-flex items-center gap-1 text-emerald-400 text-sm font-bold animate-bounce-soft">
+                📈 +{rankChange}
             </span>
         )
     }
     if (trend === 'down') {
         return (
-            <span className="inline-flex items-center gap-1 text-cinder text-sm font-medium">
-                ▼ {Math.abs(rankChange)}
+            <span className="inline-flex items-center gap-1 text-cinder text-sm font-bold">
+                📉 -{Math.abs(rankChange)}
             </span>
         )
     }
-    return <span className="text-chalk-muted text-sm">—</span>
+    return <span className="text-chalk-muted text-sm">➡️ —</span>
 }
 
 export default function LeaderboardTable({ entries, currentUserId }) {
     if (entries.length === 0) {
         return (
-            <div className="text-center py-16 text-chalk-muted">
-                <p className="font-display text-xl mb-1">No results yet</p>
-                <p className="text-sm">Log an activity to be the first on the board.</p>
+            <div className="text-center py-20 bg-track-surface rounded-xl border border-track-surfaceLight">
+                <p className="font-display text-2xl mb-2">🏁 Ready to start?</p>
+                <p className="text-chalk-muted">Log an activity to be the first on the board.</p>
             </div>
         )
     }
 
     return (
-        <div className="border border-track-surfaceLight rounded-xl overflow-hidden">
+        <div className="border border-track-surfaceLight rounded-2xl overflow-hidden bg-track-surface shadow-lg">
             <table className="w-full">
                 <thead>
-                    <tr className="bg-track-surface text-chalk-muted text-xs uppercase tracking-wide">
-                        <th className="text-left px-5 py-3 font-medium w-16">Rank</th>
-                        <th className="text-left px-5 py-3 font-medium">Name</th>
-                        <th className="text-right px-5 py-3 font-medium">Points</th>
-                        <th className="text-right px-5 py-3 font-medium w-24">7-Day</th>
+                    <tr className="bg-gradient-to-r from-track-surface to-track text-chalk-muted text-xs uppercase tracking-widest border-b border-track-surfaceLight">
+                        <th className="text-left px-6 py-4 font-bold">Rank</th>
+                        <th className="text-left px-6 py-4 font-bold">Name</th>
+                        <th className="text-right px-6 py-4 font-bold">Points</th>
+                        <th className="text-right px-6 py-4 font-bold">7-Day Trend</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {entries.map((entry) => {
+                    {entries.map((entry, idx) => {
                         const isCurrentUser = entry.userId === currentUserId
+                        const isTopThree = entry.rank <= 3
+
                         return (
                             <tr
                                 key={entry.userId}
-                                className={`border-t border-track-surfaceLight ${isCurrentUser ? 'bg-gold/10' : 'hover:bg-track-surface/60'
-                                    } transition-colors`}
+                                className={`border-t border-track-surfaceLight transition-all duration-200 hover:bg-track-surfaceLight/80 ${isCurrentUser ? 'bg-gold/10 font-semibold' : idx % 2 === 0 ? 'bg-track/30' : ''
+                                    }`}
                             >
-                                <td className="px-5 py-4">
-                                    <span
-                                        className={`font-display text-xl ${entry.rank <= 3 ? 'text-gold' : 'text-chalk-muted'
-                                            }`}
-                                    >
-                                        {entry.rank}
+                                <td className="px-6 py-4">
+                                    <span className={`font-display text-2xl font-bold ${isTopThree ? 'text-gold' : isCurrentUser ? 'text-chalk' : 'text-chalk-muted'
+                                        }`}>
+                                        {entry.rank === 1 && '🥇'}
+                                        {entry.rank === 2 && '🥈'}
+                                        {entry.rank === 3 && '🥉'}
+                                        {entry.rank > 3 && `#${entry.rank}`}
                                     </span>
                                 </td>
-                                <td className="px-5 py-4">
-                                    <span className="font-medium">
-                                        {entry.first_name} {entry.last_name}
-                                    </span>
-                                    {isCurrentUser && (
-                                        <span className="ml-2 text-xs text-gold font-semibold">YOU</span>
-                                    )}
+                                <td className="px-6 py-4">
+                                    <div className="flex items-center gap-3">
+                                        <div>
+                                            <p className="font-semibold text-chalk">
+                                                {entry.first_name} {entry.last_name}
+                                            </p>
+                                            {isCurrentUser && (
+                                                <p className="text-xs text-gold font-bold">✓ You</p>
+                                            )}
+                                        </div>
+                                    </div>
                                 </td>
-                                <td className="px-5 py-4 text-right">
-                                    <span className="font-display text-xl">
+                                <td className="px-6 py-4 text-right">
+                                    <span className={`font-display text-2xl font-bold ${isCurrentUser ? 'text-gold' : 'text-chalk'
+                                        }`}>
                                         {entry.total_points.toLocaleString()}
                                     </span>
                                 </td>
-                                <td className="px-5 py-4 text-right">
+                                <td className="px-6 py-4 text-right">
                                     <TrendIndicator trend={entry.trend} rankChange={entry.rank_change} />
                                 </td>
                             </tr>

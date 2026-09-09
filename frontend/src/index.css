@@ -6,12 +6,22 @@ body {
     @apply bg-track text-chalk font-body antialiased;
 }
 
+/* Smooth transitions for all interactive elements */
+button,
+a,
+input,
+select,
+textarea {
+    @apply transition-all duration-200 ease-out;
+}
+
 /* Visible keyboard focus ring, kept consistent across the app */
 :focus-visible {
-    outline: 2px solid theme('colors.gold.DEFAULT');
+    outline: 3px solid theme('colors.gold.DEFAULT');
     outline-offset: 2px;
 }
 
+/* Respect prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
 
     *,
@@ -21,4 +31,75 @@ body {
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
     }
+}
+
+/* Enhanced button styles */
+button {
+    @apply relative overflow-hidden;
+}
+
+button::before {
+    content: '';
+    @apply absolute inset-0 bg-white opacity-0 pointer-events-none transition-opacity duration-300;
+}
+
+button:hover::before {
+    @apply opacity-10;
+}
+
+button:active {
+    @apply scale-95;
+}
+
+/* Smooth link hover effects */
+a {
+    @apply relative;
+}
+
+a.hover\:text-gold:hover {
+    @apply text-gold;
+}
+
+/* Card hover lift effect */
+.card-hover {
+    @apply transition-all duration-300;
+}
+
+.card-hover:hover {
+    @apply -translate-y-1 shadow-xl;
+}
+
+/* Input focus enhancements */
+input,
+select,
+textarea {
+    @apply transition-all duration-200;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    @apply ring-2 ring-gold ring-offset-2 ring-offset-track-surface;
+}
+
+/* Staggered animation helper */
+.animate-delay-100 {
+    animation-delay: 100ms;
+}
+
+.animate-delay-200 {
+    animation-delay: 200ms;
+}
+
+.animate-delay-300 {
+    animation-delay: 300ms;
+}
+
+.animate-delay-400 {
+    animation-delay: 400ms;
+}
+
+/* Smooth page transitions */
+main {
+    @apply animate-fade-in;
 }

@@ -38,99 +38,128 @@ export default function Dashboard({ currentUser }) {
 
     if (!currentUser) {
         return (
-            <div className="max-w-md">
-                <h1 className="font-display text-3xl mb-3">Sign in required</h1>
-                <p className="text-chalk-muted mb-6">
-                    Sign in if you're already registered, or register if this is your first time.
-                </p>
-                <div className="flex gap-3">
-                    <Link
-                        to="/login"
-                        className="inline-block bg-gold hover:bg-gold-dark text-track font-semibold px-6 py-3 rounded-lg transition-colors"
-                    >
-                        Sign In
-                    </Link>
-                    <Link
-                        to="/register"
-                        className="inline-block bg-track-surface hover:bg-track-surfaceLight border border-track-surfaceLight text-chalk font-semibold px-6 py-3 rounded-lg transition-colors"
-                    >
-                        Register
-                    </Link>
+            <div className="max-w-md mx-auto animate-slide-up">
+                <div className="bg-gradient-to-br from-track-surface to-track rounded-2xl p-8 border border-track-surfaceLight">
+                    <h1 className="font-display text-3xl font-bold mb-3">Sign in required</h1>
+                    <p className="text-chalk-muted mb-8">
+                        Sign in if you're already registered, or register if this is your first time.
+                    </p>
+                    <div className="flex flex-col gap-3">
+                        <Link
+                            to="/login"
+                            className="inline-block w-full text-center bg-gold hover:bg-gold-dark text-track font-semibold px-6 py-3 rounded-lg transition-all hover:scale-105 hover:shadow-xl active:scale-95"
+                        >
+                            Sign In
+                        </Link>
+                        <Link
+                            to="/register"
+                            className="inline-block w-full text-center bg-track-surface hover:bg-track-surfaceLight border-2 border-gold text-gold font-semibold px-6 py-3 rounded-lg transition-all hover:scale-105 hover:shadow-lg active:scale-95"
+                        >
+                            Register
+                        </Link>
+                    </div>
                 </div>
             </div>
         )
     }
 
-    if (loading) return <p className="text-chalk-muted">Loading your dashboard…</p>
+    if (loading)
+        return (
+            <div className="text-center py-16 animate-pulse">
+                <p className="text-chalk-muted text-lg">Loading your dashboard…</p>
+            </div>
+        )
 
     if (error) {
         return (
-            <div className="bg-cinder/10 border border-cinder/40 text-cinder rounded-lg px-4 py-3 text-sm max-w-md">
+            <div className="bg-cinder/15 border-l-4 border-cinder text-cinder rounded-lg px-6 py-4 max-w-md animate-slide-in-left">
                 {error}
             </div>
         )
     }
 
     return (
-        <div>
-            <p className="text-gold font-semibold text-sm tracking-wide mb-2">MY DASHBOARD</p>
-            <h1 className="font-display text-4xl font-semibold mb-8">
-                {data.first_name} {data.last_name}
-            </h1>
+        <div className="animate-slide-up">
+            <div className="mb-10 animate-slide-up">
+                <p className="text-gold font-semibold text-sm tracking-widest mb-3">MY DASHBOARD</p>
+                <h1 className="font-display text-5xl font-bold">
+                    {data.first_name}
+                </h1>
+                <p className="text-chalk-muted mt-1 text-lg">{data.last_name}</p>
+            </div>
 
-            {/* Scoreboard readout */}
-            <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 mb-10">
-                <div className="bg-track-surface border border-track-surfaceLight rounded-xl px-6 py-5">
-                    <p className="text-chalk-muted text-sm mb-1">Total Points</p>
-                    <p className="font-display text-5xl text-gold">{data.total_points.toLocaleString()}</p>
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10 animate-scale-in">
+                <div className="bg-gradient-to-br from-gold to-gold-dark rounded-xl px-6 py-8 border border-gold text-track shadow-lg hover:shadow-xl transition-shadow hover:-translate-y-1">
+                    <p className="text-sm font-semibold opacity-90 mb-2">Total Points</p>
+                    <p className="font-display text-5xl font-bold">{data.total_points.toLocaleString()}</p>
                 </div>
-                <div className="bg-track-surface border border-track-surfaceLight rounded-xl px-6 py-5">
-                    <p className="text-chalk-muted text-sm mb-1">Current Rank</p>
-                    <p className="font-display text-5xl">#{data.current_rank}</p>
+                <div className="bg-gradient-to-br from-track-surface to-track-surfaceLight rounded-xl px-6 py-8 border border-track-surfaceLight shadow-lg hover:shadow-xl transition-shadow hover:-translate-y-1">
+                    <p className="text-chalk-muted text-sm font-semibold mb-2">Current Rank</p>
+                    <p className="font-display text-5xl font-bold text-gold">#{data.current_rank}</p>
                 </div>
             </div>
 
+            {/* Charts */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
-                <div className="bg-track-surface border border-track-surfaceLight rounded-xl px-6 py-5">
-                    <h2 className="font-display text-lg mb-4">Points Over Time</h2>
+                <div className="bg-track-surface rounded-xl p-6 border border-track-surfaceLight shadow-lg animate-slide-in-left">
+                    <h2 className="font-display text-xl font-bold mb-4">Points Over Time</h2>
                     <TrendChart data={data.points_over_time} />
                 </div>
-                <div className="bg-track-surface border border-track-surfaceLight rounded-xl px-6 py-5">
-                    <h2 className="font-display text-lg mb-4">Sport Breakdown</h2>
+                <div className="bg-track-surface rounded-xl p-6 border border-track-surfaceLight shadow-lg animate-slide-in-right">
+                    <h2 className="font-display text-xl font-bold mb-4">Sport Breakdown</h2>
                     <SportBreakdownChart data={data.sport_breakdown} />
                 </div>
             </div>
 
-            <div>
-                <h2 className="font-display text-lg mb-4">Activity History</h2>
+            {/* Activity History */}
+            <div className="animate-slide-up">
+                <h2 className="font-display text-2xl font-bold mb-4">Recent Activity</h2>
                 {data.activity_history.length === 0 ? (
-                    <p className="text-chalk-muted text-sm">No activity logged yet.</p>
+                    <div className="bg-track-surface rounded-xl p-8 border border-track-surfaceLight text-center">
+                        <p className="text-chalk-muted">No activities logged yet. Start with something!</p>
+                        <Link
+                            to="/log"
+                            className="inline-block mt-4 bg-gold hover:bg-gold-dark text-track font-semibold px-6 py-2 rounded-lg transition-all hover:scale-105"
+                        >
+                            Log First Activity
+                        </Link>
+                    </div>
                 ) : (
-                    <div className="border border-track-surfaceLight rounded-xl overflow-hidden">
-                        <table className="w-full">
-                            <thead>
-                                <tr className="bg-track-surface text-chalk-muted text-xs uppercase tracking-wide">
-                                    <th className="text-left px-5 py-3 font-medium">Sport</th>
-                                    <th className="text-left px-5 py-3 font-medium">Value</th>
-                                    <th className="text-left px-5 py-3 font-medium">Date</th>
-                                    <th className="text-right px-5 py-3 font-medium">Points</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {data.activity_history.map((activity) => (
-                                    <tr key={activity.id} className="border-t border-track-surfaceLight">
-                                        <td className="px-5 py-3.5">{SPORT_LABELS[activity.sport] || activity.sport}</td>
-                                        <td className="px-5 py-3.5 text-chalk-muted">{formatValue(activity)}</td>
-                                        <td className="px-5 py-3.5 text-chalk-muted">
-                                            {new Date(activity.activity_date).toLocaleDateString()}
-                                        </td>
-                                        <td className="px-5 py-3.5 text-right font-medium text-gold">
-                                            +{activity.points}
-                                        </td>
+                    <div className="bg-track-surface rounded-xl overflow-hidden border border-track-surfaceLight shadow-lg">
+                        <div className="overflow-x-auto">
+                            <table className="w-full">
+                                <thead>
+                                    <tr className="bg-track text-chalk-muted text-xs uppercase tracking-wide border-b border-track-surfaceLight">
+                                        <th className="text-left px-5 py-3 font-semibold">Sport</th>
+                                        <th className="text-left px-5 py-3 font-semibold">Value</th>
+                                        <th className="text-left px-5 py-3 font-semibold">Date</th>
+                                        <th className="text-right px-5 py-3 font-semibold">Points</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {data.activity_history.map((activity) => (
+                                        <tr
+                                            key={activity.id}
+                                            className="border-t border-track-surfaceLight hover:bg-track-surfaceLight/50 transition-colors"
+                                        >
+                                            <td className="px-5 py-3.5 font-medium">{SPORT_LABELS[activity.sport]}</td>
+                                            <td className="px-5 py-3.5 text-chalk-muted">{formatValue(activity)}</td>
+                                            <td className="px-5 py-3.5 text-chalk-muted">
+                                                {new Date(activity.activity_date).toLocaleDateString(undefined, {
+                                                    month: 'short',
+                                                    day: 'numeric',
+                                                    year: 'numeric',
+                                                })}
+                                            </td>
+                                            <td className="px-5 py-3.5 text-right font-bold text-gold">
+                                                +{activity.points}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 )}
             </div>
