@@ -99,6 +99,124 @@ textarea:focus {
     animation-delay: 400ms;
 }
 
+/* Opposite-phase limbs make the loader read as a running character. */
+@keyframes runner-bob {
+
+    0%,
+    100% {
+        transform: translate(-50%, 1px) rotate(-4deg);
+    }
+
+    25% {
+        transform: translate(-50%, -2px) rotate(3deg);
+    }
+
+    50% {
+        transform: translate(-50%, 0) rotate(-3deg);
+    }
+
+    75% {
+        transform: translate(-50%, -2px) rotate(4deg);
+    }
+}
+
+@keyframes runner-arm-front {
+
+    0%,
+    100% {
+        transform: translateX(-5px) rotate(48deg);
+    }
+
+    50% {
+        transform: translateX(-5px) rotate(-48deg);
+    }
+}
+
+@keyframes runner-arm-back {
+
+    0%,
+    100% {
+        transform: translateX(2px) rotate(-48deg);
+    }
+
+    50% {
+        transform: translateX(2px) rotate(48deg);
+    }
+}
+
+@keyframes runner-leg-front {
+
+    0%,
+    100% {
+        transform: translateX(-4px) rotate(48deg);
+    }
+
+    50% {
+        transform: translateX(-4px) rotate(-42deg);
+    }
+}
+
+@keyframes runner-leg-back {
+
+    0%,
+    100% {
+        transform: translateX(1px) rotate(-42deg);
+    }
+
+    50% {
+        transform: translateX(1px) rotate(48deg);
+    }
+}
+
+@keyframes run-shadow {
+
+    0%,
+    100% {
+        transform: translateX(-50%) scaleX(1);
+        opacity: 0.35;
+    }
+
+    25%,
+    75% {
+        transform: translateX(-50%) scaleX(0.65);
+        opacity: 0.16;
+    }
+}
+
+.animate-runner-bob {
+    transform-origin: 50% 100%;
+    animation: runner-bob 520ms ease-in-out infinite;
+}
+
+.animate-runner-arm-front,
+.animate-runner-arm-back,
+.animate-runner-leg-front,
+.animate-runner-leg-back {
+    animation-duration: 520ms;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+}
+
+.animate-runner-arm-front {
+    animation-name: runner-arm-front;
+}
+
+.animate-runner-arm-back {
+    animation-name: runner-arm-back;
+}
+
+.animate-runner-leg-front {
+    animation-name: runner-leg-front;
+}
+
+.animate-runner-leg-back {
+    animation-name: runner-leg-back;
+}
+
+.animate-run-shadow {
+    animation: run-shadow 520ms ease-in-out infinite;
+}
+
 /* Smooth page transitions */
 main {
     @apply animate-fade-in;

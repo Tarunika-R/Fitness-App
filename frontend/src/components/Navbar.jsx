@@ -15,8 +15,8 @@ export default function Navbar({ currentUser, onSignOut }) {
             <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
                 <NavLink to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
                     <Logo className="h-8 w-8" />
-                    <span className="font-display text-2xl font-bold text-chalk tracking-tight">
-                        FIT<span className="text-gold">QUEST</span>
+                    <span className="font-display text-2xl font-bold text-gold tracking-tight">
+                        Fit Quest
                     </span>
                 </NavLink>
 

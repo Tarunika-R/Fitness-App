@@ -9,8 +9,8 @@ export default function Footer() {
                 <div>
                     <div className="flex items-center gap-2">
                         <Logo className="h-7 w-7" />
-                        <span className="font-display text-xl font-bold tracking-tight">
-                            FIT<span className="text-gold">QUEST</span>
+                        <span className="font-display text-xl font-bold text-gold tracking-tight">
+                            Fit Quest
                         </span>
                     </div>
                     <p className="text-chalk-muted text-sm mt-3 leading-relaxed">

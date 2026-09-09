@@ -7,24 +7,28 @@ export default {
     theme: {
         extend: {
             colors: {
+                // "Neon Quest" palette — deep indigo base with electric
+                // teal + magenta accents. Token names kept the same
+                // (track/gold/cinder/chalk) so every component that
+                // already references them just picks up the new look.
                 track: {
-                    DEFAULT: '#16324A',
-                    surface: '#1E4364',
-                    surfaceLight: '#2A5680',
+                    DEFAULT: '#0D0B1E',
+                    surface: '#181530',
+                    surfaceLight: '#282149',
                 },
                 gold: {
-                    DEFAULT: '#F2B705',
-                    dark: '#C99500',
-                    light: '#FFD54F',
+                    DEFAULT: '#00F5D4',
+                    dark: '#00BFA5',
+                    light: '#6FFFE9',
                 },
-
+                cinder: {
+                    DEFAULT: '#FF3D81',
+                    dark: '#D91E63',
+                    light: '#FF7AAE',
+                },
                 chalk: {
-                    DEFAULT: '#F4F6F8',
-                    muted: '#8CA3B8',
-                },
-                bronze: {
-                    DEFAULT: '#CD7F32',
-                    dark: '#8C5523',
+                    DEFAULT: '#F2EFFB',
+                    muted: '#9C93C7',
                 },
             },
             fontFamily: {
@@ -60,6 +64,18 @@ export default {
                     '0%, 100%': { transform: 'translateY(0)' },
                     '50%': { transform: 'translateY(-5px)' },
                 },
+                'drift': {
+                    '0%, 100%': { transform: 'translate(0, 0) scale(1)' },
+                    '50%': { transform: 'translate(0, -14px) scale(1.03)' },
+                },
+                'run-bounce': {
+                    '0%, 100%': { transform: 'translateY(0) rotate(-6deg)' },
+                    '50%': { transform: 'translateY(-12px) rotate(6deg)' },
+                },
+                'track-scroll': {
+                    '0%': { transform: 'translateX(0)' },
+                    '100%': { transform: 'translateX(-50%)' },
+                },
             },
             animation: {
                 'fade-in': 'fade-in 0.6s ease-out',
@@ -69,6 +85,10 @@ export default {
                 'scale-in': 'scale-in 0.4s ease-out',
                 'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
                 'bounce-soft': 'bounce-soft 1s ease-in-out infinite',
+                'drift': 'drift 8s ease-in-out infinite',
+                'drift-slow': 'drift 12s ease-in-out infinite',
+                'run-bounce': 'run-bounce 0.5s ease-in-out infinite',
+                'track-scroll': 'track-scroll 0.6s linear infinite',
             },
         },
     },

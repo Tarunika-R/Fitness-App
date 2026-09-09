@@ -22,6 +22,10 @@ function AnimatedRoutes({ currentUser, onSetCurrentUser }) {
     const isFirstRender = useRef(true)
 
     useEffect(() => {
+        // Every navigation should land at the top of the new page, not
+        // wherever the previous page happened to be scrolled to.
+        window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+
         // Skip the buffer on the very first paint — it only kicks in
         // when actually navigating from one page/button to another.
         if (isFirstRender.current) {
