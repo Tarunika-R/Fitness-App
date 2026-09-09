@@ -1,4 +1,5 @@
 import { NavLink, useLocation } from 'react-router-dom'
+import Logo from './Logo.jsx'
 
 const navLinkClass = ({ isActive }) =>
     `px-4 py-2 text-sm font-medium tracking-wide transition-all duration-200 rounded-md ${isActive
@@ -13,6 +14,7 @@ export default function Navbar({ currentUser, onSignOut }) {
         <header className="border-b border-track-surfaceLight bg-gradient-to-r from-track to-track/95 backdrop-blur sticky top-0 z-10 shadow-lg transition-all duration-300">
             <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
                 <NavLink to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                    <Logo className="h-8 w-8" />
                     <span className="font-display text-2xl font-bold text-chalk tracking-tight">
                         FIT<span className="text-gold">QUEST</span>
                     </span>

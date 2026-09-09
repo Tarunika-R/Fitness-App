@@ -1,3 +1,5 @@
+import Logo from './Logo.jsx'
+
 export default function Footer() {
     const year = new Date().getFullYear()
 
@@ -5,9 +7,12 @@ export default function Footer() {
         <footer className="border-t border-track-surfaceLight bg-track-surface/60 backdrop-blur mt-20">
             <div className="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 sm:grid-cols-3 gap-8">
                 <div>
-                    <span className="font-display text-xl font-bold tracking-tight">
-                        FIT<span className="text-gold">QUEST</span>
-                    </span>
+                    <div className="flex items-center gap-2">
+                        <Logo className="h-7 w-7" />
+                        <span className="font-display text-xl font-bold tracking-tight">
+                            FIT<span className="text-gold">QUEST</span>
+                        </span>
+                    </div>
                     <p className="text-chalk-muted text-sm mt-3 leading-relaxed">
                         Gamified fitness tracking. Log any workout, earn fair points, and
                         climb the global leaderboard.
