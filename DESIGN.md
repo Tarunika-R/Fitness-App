@@ -217,3 +217,82 @@ points = (whole_hundreds / 100) × rate_per_100_steps
 Example: 399 steps → `floor(399/100)×100 = 300` → `300/100 = 3` → **3 points**.
 
 All three rules were verified against the exact worked examples given in the assignment spec before integration into the API (1.55 km walking → 77, 399 steps → 3), and again end-to-end through the live API during manual testing.
+
+---
+
+## e. Frontend Architecture & Visualizations
+
+### Component breakdown
+
+```
+frontend/src/
+├── App.jsx                      — router, session state, page-transition wrapper
+├── api/client.js                — thin Axios wrapper around every backend endpoint
+├── pages/
+│   ├── Home.jsx                 — marketing/landing page; shows a sample
+│   │                              leaderboard preview and CTA buttons into every
+│   │                              other page for unauthenticated visitors
+│   ├── Register.jsx / SignIn.jsx
+│   ├── LogActivity.jsx          — wraps ActivityForm
+│   ├── Leaderboard.jsx          — wraps LeaderboardTable; gated for signed-out visitors
+│   └── Dashboard.jsx            — wraps stat cards + TrendChart + SportBreakdownChart
+├── components/
+│   ├── Navbar.jsx / Footer.jsx / Logo.jsx
+│   ├── ActivityForm.jsx         — per-sport input UX (distance / mm:ss / step count)
+│   ├── LeaderboardTable.jsx     — rank, name, points, 7-day trend arrow
+│   ├── TrendChart.jsx           — Recharts area chart, points-over-time
+│   ├── SportBreakdownChart.jsx  — Recharts donut chart, points-per-sport
+│   ├── AnimatedBackground.jsx   — cursor-reactive radial-gradient background
+│   ├── PageLoader.jsx           — brief buffer shown between route transitions
+│   ├── PreviewGate.jsx          — blurs/dims a page's real content and overlays a
+│   │                              Register/Sign In prompt for signed-out visitors
+│   └── visuals/
+│       ├── SportVisual.jsx      — per-sport illustration (replaces plain emoji)
+│       └── FeatureVisual.jsx    — landing-page feature illustrations
+```
+
+### Global Leaderboard
+
+`Leaderboard.jsx` calls `GET /leaderboard` and renders the response through `LeaderboardTable.jsx`. When the visitor isn't signed in, the page wraps the table in `PreviewGate`: real (sample) leaderboard data renders underneath, blurred and non-interactive, with a card on top prompting registration/sign-in — this lets a prospective user see exactly what the feature looks like before committing to an account, rather than hiding it behind a wall entirely.
+
+**Ranking calculation strategy:** ranking is never computed in the frontend — the frontend only renders whatever order `GET /leaderboard` returns. This keeps ranking logic in one place (the backend, see section b) and guarantees the leaderboard a user sees always matches what any other client (mobile app, another browser tab) would see for the same data.
+
+### Personal Dashboard
+
+`Dashboard.jsx` calls `GET /dashboard/{userId}` once and distributes the single response across three visual pieces:
+- Two scoreboard-style stat cards (total points, current rank) — direct fields from the response, no client-side computation.
+- `TrendChart.jsx` — Recharts `AreaChart` fed directly by `points_over_time[]`; the backend has already grouped points by calendar day, so the frontend only needs to plot.
+- `SportBreakdownChart.jsx` — Recharts `PieChart` (donut) fed by `sport_breakdown[]`, again pre-aggregated server-side.
+
+Same as the leaderboard, the dashboard is wrapped in `PreviewGate` for signed-out visitors, showing a blurred sample of what a real dashboard looks like.
+
+### Interaction & motion design
+
+- Route changes use `framer-motion`'s `AnimatePresence` for a short fade/slide transition (`App.jsx`), plus a brief `PageLoader` buffer so navigation never feels instantaneous-to-the-point-of-jarring.
+- `AnimatedBackground.jsx` tracks pointer position and updates a CSS custom property consumed by a radial-gradient background, giving the page subtle depth without any heavy WebGL/canvas dependency.
+- All interactive elements (buttons, cards, table rows) use Tailwind transition utilities for hover/active feedback (scale, shadow, color) rather than one-off inline styles, keeping the motion language consistent across the app.
+
+---
+
+## f. Trade-offs & Edge Cases
+
+### Trade-offs
+
+| Decision | Trade-off accepted | Why |
+|---|---|---|
+| SQLite instead of Postgres/MySQL | No built-in support for concurrent writers across multiple processes; single-file storage | Matches the assignment's recommended scope; SQLAlchemy's ORM abstraction makes swapping the connection string to Postgres a non-breaking change later |
+| Leaderboard computed on read, not cached/stored | Every `GET /leaderboard` call re-aggregates all activities for all users | Avoids a second source of truth that could drift from actual activity data (see section b); acceptable at this data scale, and straightforward to add caching (e.g. a short TTL cache) later without changing the API contract |
+| Identity = first + last name (no password auth) | Anyone who knows a user's name can "sign in" as them via the lookup endpoint | Explicitly out of scope per the assignment (no auth system requested); the same identity rule is used consistently for both duplicate-detection at registration and "sign back in," so there's no separate, weaker rule introduced for convenience |
+| Points stored on the activity row rather than recomputed from `raw_value` on every read | Slightly more storage; a bug in `scoring.py` before a fix won't retroactively correct already-stored points | Historical auditability — a user's past activity should show the points they actually earned at the time, not be silently rewritten if scoring logic changes |
+| CORS wide open (`allow_origins=["*"]`) | Not production-safe as-is | Appropriate for local development against a dynamic Vite port; a real deployment would lock this to the deployed frontend's origin |
+
+### Edge cases handled
+
+- **Concurrent duplicate registration** — two simultaneous `POST /users` requests for the same name could both pass the application-level pre-check before either commits. The database-level `UNIQUE(first_name, last_name)` constraint is the actual guard: whichever request commits second fails at the database layer. (In the current implementation this raises a raw integrity error rather than a clean `409` in that narrow race window — a known limitation worth wrapping in a try/except around the insert if this were hardened further for production.)
+- **Case sensitivity in names** — `"Jane Doe"` and `"jane doe"` are treated as the same identity for both duplicate-detection and sign-in lookup, via `func.lower()` comparisons — a visitor can't accidentally create a second account by capitalizing differently.
+- **Invalid sport/metric combination** — explicitly validated and returns `400`, not `422`, distinguishing "well-formed but semantically wrong" from "malformed" per the spec's requirement.
+- **Non-existent `userId` on activity ingestion** — returns `404` rather than silently creating an orphaned activity row or crashing on the foreign-key insert.
+- **Zero-value or negative activity values** — rejected at the schema level (`Field(..., gt=0)`) before reaching the scoring engine, so `calculate_points` never has to handle nonsensical input.
+- **Fractional edge cases in scoring** — verified against the two examples the spec gives explicitly (1.55 km walking → 77 points; 399 steps → 3 points), plus additional cases exercised manually through the live API (a duration of exactly 60 seconds, a distance of exactly 0.01 km) to confirm the flooring behaves correctly at boundaries, not just on "clean" inputs.
+- **Empty leaderboard / empty dashboard** — both the frontend (empty-state messaging in `LeaderboardTable.jsx` and `Dashboard.jsx`) and backend (aggregation queries use `COALESCE(SUM(...), 0)` so a user with zero activities gets `0` rather than `NULL` or a query error) handle the no-data case explicitly rather than assuming at least one activity always exists.
+- **Signed-out access to gated pages** — rather than a blank page or a hard redirect, `PreviewGate` shows real (sample) UI so a prospective user understands the value before registering.

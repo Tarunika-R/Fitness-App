@@ -17,9 +17,9 @@ export default {
                     surfaceLight: '#282149',
                 },
                 gold: {
-                    DEFAULT: '#00F5D4',
-                    dark: '#00BFA5',
-                    light: '#6FFFE9',
+                    DEFAULT: '#FFD700', // Gold
+                    dark: '#B8860B',    // Dark Goldenrod
+                    light: '#FFE97A',   // Light Gold
                 },
                 cinder: {
                     DEFAULT: '#FF3D81',
