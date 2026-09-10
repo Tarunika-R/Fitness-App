@@ -1,22 +1,32 @@
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts'
+import { SPORT_COLORS, SPORT_LABELS, THEME_COLORS } from '../theme.js'
 
-// One consistent color per sport across the app.
-const SPORT_COLORS = {
-    running: '#00F5D4',
-    walking: '#9C93C7',
-    cycling: '#4FA3FF',
-    gym: '#FF3D81',
-    swimming: '#3FE0B6',
-    daily_steps: '#B57EFF',
-}
+// Custom tooltip: the points value is colored to match the slice being
+// hovered, so the number is immediately tied back to that sport's color
+// in the donut and legend — rather than every tooltip showing the same
+// flat text color regardless of which segment is active.
+function BreakdownTooltip({ active, payload }) {
+    if (!active || !payload || payload.length === 0) return null
+    const entry = payload[0]
+    const color = entry.payload.fill
 
-const SPORT_LABELS = {
-    running: 'Running',
-    walking: 'Walking',
-    cycling: 'Cycling',
-    gym: 'Gym',
-    swimming: 'Swimming',
-    daily_steps: 'Daily Steps',
+    return (
+        <div
+            style={{
+                background: THEME_COLORS.trackSurface,
+                border: `1px solid ${THEME_COLORS.trackSurfaceLight}`,
+                borderRadius: '8px',
+                padding: '8px 12px',
+            }}
+        >
+            <p style={{ color: THEME_COLORS.chalkMuted, fontSize: 12, marginBottom: 2 }}>
+                {entry.name}
+            </p>
+            <p style={{ color, fontSize: 14, fontWeight: 700 }}>
+                {entry.value.toLocaleString()} pts
+            </p>
+        </div>
+    )
 }
 
 export default function SportBreakdownChart({ data }) {
@@ -32,6 +42,7 @@ export default function SportBreakdownChart({ data }) {
         name: SPORT_LABELS[d.sport] || d.sport,
         value: d.total_points,
         sport: d.sport,
+        fill: SPORT_COLORS[d.sport] || THEME_COLORS.chalkMuted,
     }))
 
     return (
@@ -46,22 +57,14 @@ export default function SportBreakdownChart({ data }) {
                     paddingAngle={2}
                 >
                     {chartData.map((entry) => (
-                        <Cell key={entry.sport} fill={SPORT_COLORS[entry.sport] || '#9C93C7'} />
+                        <Cell key={entry.sport} fill={entry.fill} />
                     ))}
                 </Pie>
-                <Tooltip
-                    contentStyle={{
-                        background: '#181530',
-                        border: '1px solid #282149',
-                        borderRadius: '8px',
-                        color: '#F2EFFB',
-                    }}
-                    formatter={(value) => [`${value} pts`, '']}
-                />
+                <Tooltip content={<BreakdownTooltip />} />
                 <Legend
                     verticalAlign="bottom"
                     height={36}
-                    wrapperStyle={{ fontSize: '12px', color: '#9C93C7' }}
+                    wrapperStyle={{ fontSize: '12px', color: THEME_COLORS.chalkMuted }}
                 />
             </PieChart>
         </ResponsiveContainer>

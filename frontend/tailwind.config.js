@@ -1,3 +1,5 @@
+import { THEME_COLORS } from './src/theme.js'
+
 /** @type {import('tailwindcss').Config} */
 export default {
     content: [
@@ -8,27 +10,26 @@ export default {
         extend: {
             colors: {
                 // "Neon Quest" palette — deep indigo base with electric
-                // teal + magenta accents. Token names kept the same
-                // (track/gold/cinder/chalk) so every component that
-                // already references them just picks up the new look.
+                // teal + magenta accents. Sourced from src/theme.js so this
+                // config and every chart component share one definition.
                 track: {
-                    DEFAULT: '#0D0B1E',
-                    surface: '#181530',
-                    surfaceLight: '#282149',
+                    DEFAULT: THEME_COLORS.track,
+                    surface: THEME_COLORS.trackSurface,
+                    surfaceLight: THEME_COLORS.trackSurfaceLight,
                 },
                 gold: {
-                    DEFAULT: '#FFD700', // Gold
+                    DEFAULT: '#ffd900e5', // Gold
                     dark: '#B8860B',    // Dark Goldenrod
                     light: '#FFE97A',   // Light Gold
                 },
                 cinder: {
-                    DEFAULT: '#FF3D81',
-                    dark: '#D91E63',
-                    light: '#FF7AAE',
+                    DEFAULT: THEME_COLORS.cinder,
+                    dark: THEME_COLORS.cinderDark,
+                    light: THEME_COLORS.cinderLight,
                 },
                 chalk: {
-                    DEFAULT: '#F2EFFB',
-                    muted: '#9C93C7',
+                    DEFAULT: THEME_COLORS.chalk,
+                    muted: THEME_COLORS.chalkMuted,
                 },
             },
             fontFamily: {

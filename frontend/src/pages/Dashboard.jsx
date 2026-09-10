@@ -4,15 +4,7 @@ import { getDashboard, getErrorMessage } from '../api/client.js'
 import TrendChart from '../components/TrendChart.jsx'
 import SportBreakdownChart from '../components/SportBreakdownChart.jsx'
 import PreviewGate from '../components/PreviewGate.jsx'
-
-const SPORT_LABELS = {
-    running: 'Running',
-    walking: 'Walking',
-    cycling: 'Cycling',
-    gym: 'Gym',
-    swimming: 'Swimming',
-    daily_steps: 'Daily Steps',
-}
+import { SPORT_LABELS } from '../theme.js'
 
 function formatValue(activity) {
     if (activity.metric_type === 'distance_km') return `${activity.raw_value} km`
@@ -22,6 +14,39 @@ function formatValue(activity) {
         return `${mins}:${String(secs).padStart(2, '0')}`
     }
     return `${activity.raw_value.toLocaleString()} steps`
+}
+
+// Groups a flat, mixed-day activity list into per-date sections so the
+// history reads as "here's what happened each day" instead of repeating
+// the same date down every row of a long, undifferentiated table.
+function groupActivitiesByDate(activities) {
+    const buckets = new Map()
+    for (const activity of activities) {
+        const dateKey = new Date(activity.activity_date).toISOString().slice(0, 10)
+        if (!buckets.has(dateKey)) buckets.set(dateKey, [])
+        buckets.get(dateKey).push(activity)
+    }
+
+    const today = new Date().toISOString().slice(0, 10)
+    const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10)
+
+    return [...buckets.entries()]
+        .sort(([a], [b]) => (a < b ? 1 : -1)) // most recent date first
+        .map(([dateKey, dayActivities]) => {
+            let label
+            if (dateKey === today) label = 'Today'
+            else if (dateKey === yesterday) label = 'Yesterday'
+            else {
+                label = new Date(dateKey).toLocaleDateString(undefined, {
+                    weekday: 'long',
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                })
+            }
+            const totalPoints = dayActivities.reduce((sum, a) => sum + a.points, 0)
+            return { dateKey, label, totalPoints, activities: dayActivities }
+        })
 }
 
 // Sample data shown (blurred, non-interactive) to visitors who haven't
@@ -105,40 +130,45 @@ function DashboardContent({ data }) {
                         </Link>
                     </div>
                 ) : (
-                    <div className="bg-track-surface rounded-xl overflow-hidden border border-track-surfaceLight shadow-lg">
-                        <div className="overflow-x-auto">
-                            <table className="w-full">
-                                <thead>
-                                    <tr className="bg-track text-chalk-muted text-xs uppercase tracking-wide border-b border-track-surfaceLight">
-                                        <th className="text-left px-5 py-3 font-semibold">Sport</th>
-                                        <th className="text-left px-5 py-3 font-semibold">Value</th>
-                                        <th className="text-left px-5 py-3 font-semibold">Date</th>
-                                        <th className="text-right px-5 py-3 font-semibold">Points</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {data.activity_history.map((activity) => (
-                                        <tr
-                                            key={activity.id}
-                                            className="border-t border-track-surfaceLight hover:bg-track-surfaceLight/50 transition-colors"
-                                        >
-                                            <td className="px-5 py-3.5 font-medium">{SPORT_LABELS[activity.sport]}</td>
-                                            <td className="px-5 py-3.5 text-chalk-muted">{formatValue(activity)}</td>
-                                            <td className="px-5 py-3.5 text-chalk-muted">
-                                                {new Date(activity.activity_date).toLocaleDateString(undefined, {
-                                                    month: 'short',
-                                                    day: 'numeric',
-                                                    year: 'numeric',
-                                                })}
-                                            </td>
-                                            <td className="px-5 py-3.5 text-right font-bold text-gold">
-                                                +{activity.points}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                    <div className="space-y-5">
+                        {groupActivitiesByDate(data.activity_history).map((group) => (
+                            <div
+                                key={group.dateKey}
+                                className="bg-track-surface rounded-xl overflow-hidden border border-track-surfaceLight shadow-lg"
+                            >
+                                <div className="flex items-center justify-between px-5 py-3 bg-track border-b border-track-surfaceLight">
+                                    <h3 className="font-semibold text-chalk">{group.label}</h3>
+                                    <span className="text-gold font-bold text-sm">
+                                        +{group.totalPoints} pts
+                                    </span>
+                                </div>
+                                <div className="overflow-x-auto">
+                                    <table className="w-full">
+                                        <thead>
+                                            <tr className="text-chalk-muted text-xs uppercase tracking-wide">
+                                                <th className="text-left px-5 py-2 font-semibold">Sport</th>
+                                                <th className="text-left px-5 py-2 font-semibold">Value</th>
+                                                <th className="text-right px-5 py-2 font-semibold">Points</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {group.activities.map((activity) => (
+                                                <tr
+                                                    key={activity.id}
+                                                    className="border-t border-track-surfaceLight hover:bg-track-surfaceLight/50 transition-colors"
+                                                >
+                                                    <td className="px-5 py-3 font-medium">{SPORT_LABELS[activity.sport]}</td>
+                                                    <td className="px-5 py-3 text-chalk-muted">{formatValue(activity)}</td>
+                                                    <td className="px-5 py-3 text-right font-bold text-gold">
+                                                        +{activity.points}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 )}
             </div>
